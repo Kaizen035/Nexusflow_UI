@@ -1,11 +1,10 @@
 --[[ 
-    NEXUSFLOW UI LIBRARY - SOURCE MODULE (v16.0 Clean Profile)
+    NEXUSFLOW UI LIBRARY - SOURCE MODULE (v17.0 Fixed Profile)
     Designed for: Dita Setia Hermawan
     
     Update:
-    - Removed "Architect" Role text from Profile.
-    - Simplified Title.
-    - Centered Username in Sidebar.
+    - COMPLETELY REMOVED "Architect" Subtitle.
+    - Vertically Centered the Username for a cleaner look.
 ]]
 
 local TweenService = game:GetService("TweenService")
@@ -267,7 +266,7 @@ function NexusFlow:CreateWindow(Config)
     local SidebarStroke = Create("UIStroke", {Parent = Sidebar, Thickness = 1, Transparency = 0.6})
     RegisterThemeObj(SidebarStroke, "Color", "Stroke")
 
-    -- Profile (UPDATED: Role Removed, Name Centered)
+    -- Profile (UPDATED: Title Removed, Centered)
     local ProfileFrame = Create("Frame", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(1, 0, 0, 50)
     })
@@ -280,12 +279,14 @@ function NexusFlow:CreateWindow(Config)
         local content = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
         ProfileImg.Image = content
     end)
+    
+    -- [PERBAIKAN DI SINI] Nama sekarang di tengah vertikal, tanpa sub-title
     local PName = Create("TextLabel", {
         Parent = ProfileFrame, 
         BackgroundTransparency = 1, 
-        Position = UDim2.new(0, 50, 0.5, 0), -- Centered vertically
-        AnchorPoint = Vector2.new(0, 0.5), -- Anchor point center
-        Size = UDim2.new(0, 100, 0, 16), 
+        Position = UDim2.new(0, 55, 0.5, 0), -- Posisi Tengah Y
+        AnchorPoint = Vector2.new(0, 0.5),  -- Anchor Point Tengah
+        Size = UDim2.new(0, 110, 0, 20), 
         Text = LocalPlayer.DisplayName, 
         Font = Enum.Font.GothamBold,
         TextSize = 13, 
@@ -294,13 +295,13 @@ function NexusFlow:CreateWindow(Config)
     })
     RegisterThemeObj(PName, "TextColor3", "Text")
     
-    -- [REMOVED] PRole (Architect text removed)
+    -- Sub-title "Architect" sudah dihapus total di sini
 
     -- Title
     local TitleLabel = Create("TextLabel", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 15, 0, 20),
         Size = UDim2.new(1, -15, 0, 20), 
-        Text = Config.Title or "NEXUSFLOW", -- Default Title
+        Text = Config.Title or "NEXUSFLOW",
         Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = NexusFlow.CurrentTheme.Text,
         TextXAlignment = Enum.TextXAlignment.Left
     })
