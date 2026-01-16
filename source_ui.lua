@@ -1,9 +1,11 @@
 --[[ 
-    NEXUSFLOW UI LIBRARY - SOURCE MODULE
-    Version: 1.0 Stable
-    Author: Dita Setia Hermawan
+    NEXUSFLOW UI LIBRARY - SOURCE MODULE (v16.0 Clean Profile)
+    Designed for: Dita Setia Hermawan
     
-    Instruction: Upload this code to GitHub and get the RAW link.
+    Update:
+    - Removed "Architect" Role text from Profile.
+    - Simplified Title.
+    - Centered Username in Sidebar.
 ]]
 
 local TweenService = game:GetService("TweenService")
@@ -103,7 +105,7 @@ NexusFlow.Themes = {
 NexusFlow.CurrentTheme = NexusFlow.Themes.Dark
 local ThemeObjects = {}
 
--- // UTILITY & HELPERS
+-- // UTILITY
 local function RegisterThemeObj(obj, prop, key)
     table.insert(ThemeObjects, {Object = obj, Property = prop, Key = key})
     obj[prop] = NexusFlow.CurrentTheme[key]
@@ -143,7 +145,7 @@ local function MakeDraggable(topbar, main)
     end)
 end
 
--- // NOTIFICATION SYSTEM
+-- // NOTIFICATION
 local NotifyFunc = nil
 local function SetupNotifications(ScreenGui)
     local NotifContainer = Create("Frame", {
@@ -203,7 +205,7 @@ function NexusFlow:CreateWindow(Config)
     local ScreenGui = Create("ScreenGui", {Name = "NexusFlow_Main", Parent = CoreGui, ZIndexBehavior = Enum.ZIndexBehavior.Sibling})
     SetupNotifications(ScreenGui)
 
-    -- // FLOATING LOGO
+    -- Floating Logo
     local FloatingBtn = Create("ImageButton", {
         Parent = ScreenGui, BackgroundColor3 = NexusFlow.CurrentTheme.Main,
         Position = UDim2.new(0.1, 0, 0.1, 0), Size = UDim2.new(0, 40, 0, 40),
@@ -216,7 +218,7 @@ function NexusFlow:CreateWindow(Config)
     RegisterThemeObj(FloatStroke, "Color", "Accent")
     MakeDraggable(FloatingBtn, FloatingBtn)
 
-    -- // MAIN WINDOW
+    -- Main Window
     local Shadow = Create("ImageLabel", {
         Parent = ScreenGui, BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5),
         Position = UDim2.new(0.5, 0, 0.5, 0), Size = UDim2.new(0, 650, 0, 450), 
@@ -231,7 +233,7 @@ function NexusFlow:CreateWindow(Config)
     RegisterThemeObj(MainFrame, "BackgroundColor3", "Main")
     Create("UICorner", {Parent = MainFrame, CornerRadius = UDim.new(0, 10)})
     
-    -- VISUALS (Grid + Vignette)
+    -- Visuals
     local BgHolder = Create("Frame", {Parent = MainFrame, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, ZIndex = 1})
     local GridPattern = Create("ImageLabel", {
         Parent = BgHolder, BackgroundTransparency = 1, Size = UDim2.new(0, 800, 0, 600),
@@ -256,7 +258,7 @@ function NexusFlow:CreateWindow(Config)
     local MainStroke = Create("UIStroke", {Parent = MainFrame, Thickness = 1, Transparency = 0.1})
     RegisterThemeObj(MainStroke, "Color", "Stroke")
 
-    -- SIDEBAR & PROFILE
+    -- Sidebar
     local Sidebar = Create("Frame", {
         Parent = MainFrame, BackgroundColor3 = NexusFlow.CurrentTheme.Sidebar,
         Size = UDim2.new(0, 180, 1, 0), BorderSizePixel = 0, ZIndex = 3
@@ -265,6 +267,7 @@ function NexusFlow:CreateWindow(Config)
     local SidebarStroke = Create("UIStroke", {Parent = Sidebar, Thickness = 1, Transparency = 0.6})
     RegisterThemeObj(SidebarStroke, "Color", "Stroke")
 
+    -- Profile (UPDATED: Role Removed, Name Centered)
     local ProfileFrame = Create("Frame", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(1, 0, 0, 50)
     })
@@ -278,28 +281,32 @@ function NexusFlow:CreateWindow(Config)
         ProfileImg.Image = content
     end)
     local PName = Create("TextLabel", {
-        Parent = ProfileFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 50, 0.5, -7),
-        Size = UDim2.new(0, 100, 0, 14), Text = LocalPlayer.DisplayName, Font = Enum.Font.GothamBold,
-        TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = NexusFlow.CurrentTheme.Text
+        Parent = ProfileFrame, 
+        BackgroundTransparency = 1, 
+        Position = UDim2.new(0, 50, 0.5, 0), -- Centered vertically
+        AnchorPoint = Vector2.new(0, 0.5), -- Anchor point center
+        Size = UDim2.new(0, 100, 0, 16), 
+        Text = LocalPlayer.DisplayName, 
+        Font = Enum.Font.GothamBold,
+        TextSize = 13, 
+        TextXAlignment = Enum.TextXAlignment.Left, 
+        TextColor3 = NexusFlow.CurrentTheme.Text
     })
     RegisterThemeObj(PName, "TextColor3", "Text")
-    local PRole = Create("TextLabel", {
-        Parent = ProfileFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 50, 0.5, 5),
-        Size = UDim2.new(0, 100, 0, 10), Text = "Architect", Font = Enum.Font.Gotham,
-        TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = NexusFlow.CurrentTheme.Accent
-    })
-    RegisterThemeObj(PRole, "TextColor3", "Accent")
+    
+    -- [REMOVED] PRole (Architect text removed)
 
-    -- TITLE
+    -- Title
     local TitleLabel = Create("TextLabel", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 15, 0, 20),
-        Size = UDim2.new(1, -15, 0, 20), Text = Config.Title or "NEXUSFLOW",
+        Size = UDim2.new(1, -15, 0, 20), 
+        Text = Config.Title or "NEXUSFLOW", -- Default Title
         Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = NexusFlow.CurrentTheme.Text,
         TextXAlignment = Enum.TextXAlignment.Left
     })
     RegisterThemeObj(TitleLabel, "TextColor3", "Text")
 
-    -- TABS
+    -- Tab Container
     local TabScroll = Create("ScrollingFrame", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 60),
         Size = UDim2.new(1, 0, 1, -110), ScrollBarThickness = 0, CanvasSize = UDim2.new(0,0,0,0)
@@ -311,6 +318,7 @@ function NexusFlow:CreateWindow(Config)
     Create("UIPadding", {Parent = TabScroll, PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10)})
     TabList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() TabScroll.CanvasSize = UDim2.new(0,0,0,TabList.AbsoluteContentSize.Y + 16) end)
 
+    -- Content
     local Content = Create("Frame", {
         Parent = MainFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 180, 0, 0),
         Size = UDim2.new(1, -180, 1, 0), ClipsDescendants = true, ZIndex = 3
@@ -333,7 +341,7 @@ function NexusFlow:CreateWindow(Config)
     })
     RegisterThemeObj(MinimizeBtn, "ImageColor3", "SubText")
     
-    -- CLOSE & MINIMIZE LOGIC
+    -- Actions
     CloseBtn.MouseButton1Click:Connect(function()
         NotifyFunc("System", "Unloading NexusFlow...", 1.5)
         local RollTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 630, 0, 0)})
@@ -375,7 +383,6 @@ function NexusFlow:CreateWindow(Config)
 
     function Win:CreateTab(Name)
         local Tab = {Left = {}, Right = {}}
-        
         local Btn = Create("TextButton", {Parent = TabScroll, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 30), Text = "", AutoButtonColor = false})
         Create("UICorner", {Parent = Btn, CornerRadius = UDim.new(0, 6)})
         local Lbl = Create("TextLabel", {Parent = Btn, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -10, 1, 0), Text = Name, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = NexusFlow.CurrentTheme.SubText, TextXAlignment = Enum.TextXAlignment.Left})
@@ -383,19 +390,15 @@ function NexusFlow:CreateWindow(Config)
         local ActiveLine = Create("Frame", {Parent = Btn, BackgroundColor3 = NexusFlow.CurrentTheme.Accent, Position = UDim2.new(0, 0, 0.5, -6), Size = UDim2.new(0, 2, 0, 12), Transparency = 1})
         RegisterThemeObj(ActiveLine, "BackgroundColor3", "Accent")
         Create("UICorner", {Parent = ActiveLine, CornerRadius = UDim.new(1,0)})
-
         local Page = Create("ScrollingFrame", {Parent = Pages, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, 0), Visible = false, ScrollBarThickness = 2, CanvasSize = UDim2.new(0,0,0,0)})
         RegisterThemeObj(Page, "ScrollBarImageColor3", "Accent")
-        
         local LeftCol = Create("Frame", {Parent = Page, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 10), Size = UDim2.new(0.5, -15, 1, -20)})
         local LeftList = Create("UIListLayout", {Parent = LeftCol, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder})
         local RightCol = Create("Frame", {Parent = Page, BackgroundTransparency = 1, Position = UDim2.new(0.5, 5, 0, 10), Size = UDim2.new(0.5, -15, 1, -20)})
         local RightList = Create("UIListLayout", {Parent = RightCol, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder})
-
         local function UpdateCanvas() Page.CanvasSize = UDim2.new(0,0,0, math.max(LeftList.AbsoluteContentSize.Y, RightList.AbsoluteContentSize.Y) + 20) end
         LeftList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateCanvas)
         RightList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateCanvas)
-
         local function Activate()
             if CurrentTab == Btn then return end
             if CurrentTab then
@@ -528,7 +531,6 @@ function NexusFlow:CreateWindow(Config)
     function Win:LoadModule(Url)
         NotifyFunc("System", "Fetching Module...", 2)
         local Success, Result = pcall(function()
-             -- INI BAGIAN PENTING: Me-load script raw dan memberikan akses 'Win'
             return loadstring(game:HttpGet(Url))(Win)
         end)
         
