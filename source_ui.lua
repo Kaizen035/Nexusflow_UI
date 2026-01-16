@@ -1,10 +1,10 @@
 --[[ 
-    NEXUSFLOW UI LIBRARY - SOURCE MODULE (v17.0 Fixed Profile)
+    NEXUSFLOW UI LIBRARY - SOURCE MODULE (v19.0 Settings Overhaul)
     Designed for: Dita Setia Hermawan
     
     Update:
-    - COMPLETELY REMOVED "Architect" Subtitle.
-    - Vertically Centered the Username for a cleaner look.
+    - Added :SetProfileVisible(bool) to support Privacy Mode.
+    - Optimized Animations for Fade/Speed settings.
 ]]
 
 local TweenService = game:GetService("TweenService")
@@ -18,88 +18,20 @@ local HttpService = game:GetService("HttpService")
 local NexusFlow = {}
 local UI_Connections = {}
 
--- // THEME CONFIGURATION
+-- GLOBAL ANIMATION SETTINGS (Can be changed via UI)
+NexusFlow.AnimSpeed = 0.4
+NexusFlow.FadeTime = 0.3
+
+-- // THEME CONFIGURATION (Tetap Sama)
 NexusFlow.Themes = {
-    Dark = {
-        Main = Color3.fromRGB(20, 20, 24),
-        Sidebar = Color3.fromRGB(26, 26, 32),
-        Content = Color3.fromRGB(22, 22, 28),
-        Accent = Color3.fromRGB(90, 180, 255),
-        Text = Color3.fromRGB(245, 245, 245),
-        SubText = Color3.fromRGB(160, 160, 160),
-        Stroke = Color3.fromRGB(50, 50, 60),
-        Hover = Color3.fromRGB(35, 35, 42),
-    },
-    Midnight = {
-        Main = Color3.fromRGB(10, 10, 14),
-        Sidebar = Color3.fromRGB(16, 16, 22),
-        Content = Color3.fromRGB(12, 12, 18),
-        Accent = Color3.fromRGB(120, 100, 255),
-        Text = Color3.fromRGB(230, 230, 255),
-        SubText = Color3.fromRGB(120, 120, 160),
-        Stroke = Color3.fromRGB(40, 40, 55),
-        Hover = Color3.fromRGB(25, 25, 35),
-    },
-    Blueprint = {
-        Main = Color3.fromRGB(15, 25, 40),
-        Sidebar = Color3.fromRGB(20, 35, 55),
-        Content = Color3.fromRGB(25, 40, 60),
-        Accent = Color3.fromRGB(50, 150, 255),
-        Text = Color3.fromRGB(240, 250, 255),
-        SubText = Color3.fromRGB(150, 180, 210),
-        Stroke = Color3.fromRGB(60, 90, 120),
-        Hover = Color3.fromRGB(30, 50, 80),
-    },
-    Ocean = {
-        Main = Color3.fromRGB(15, 20, 25),
-        Sidebar = Color3.fromRGB(20, 30, 35),
-        Content = Color3.fromRGB(25, 35, 40),
-        Accent = Color3.fromRGB(0, 200, 200),
-        Text = Color3.fromRGB(240, 255, 255),
-        SubText = Color3.fromRGB(130, 160, 160),
-        Stroke = Color3.fromRGB(40, 60, 70),
-        Hover = Color3.fromRGB(30, 45, 50),
-    },
-    Cherry = {
-        Main = Color3.fromRGB(25, 15, 15),
-        Sidebar = Color3.fromRGB(35, 20, 20),
-        Content = Color3.fromRGB(30, 20, 20),
-        Accent = Color3.fromRGB(255, 80, 80),
-        Text = Color3.fromRGB(255, 240, 240),
-        SubText = Color3.fromRGB(180, 130, 130),
-        Stroke = Color3.fromRGB(70, 40, 40),
-        Hover = Color3.fromRGB(50, 30, 30),
-    },
-    Serpent = {
-        Main = Color3.fromRGB(15, 20, 15),
-        Sidebar = Color3.fromRGB(20, 28, 20),
-        Content = Color3.fromRGB(22, 32, 22),
-        Accent = Color3.fromRGB(80, 220, 120),
-        Text = Color3.fromRGB(240, 255, 240),
-        SubText = Color3.fromRGB(130, 160, 130),
-        Stroke = Color3.fromRGB(40, 70, 40),
-        Hover = Color3.fromRGB(30, 45, 30),
-    },
-    Amethyst = {
-        Main = Color3.fromRGB(20, 15, 25),
-        Sidebar = Color3.fromRGB(30, 20, 40),
-        Content = Color3.fromRGB(28, 22, 38),
-        Accent = Color3.fromRGB(180, 100, 255),
-        Text = Color3.fromRGB(250, 240, 255),
-        SubText = Color3.fromRGB(160, 130, 180),
-        Stroke = Color3.fromRGB(70, 50, 90),
-        Hover = Color3.fromRGB(45, 30, 60),
-    },
-    Concrete = {
-        Main = Color3.fromRGB(30, 30, 30),
-        Sidebar = Color3.fromRGB(38, 38, 38),
-        Content = Color3.fromRGB(35, 35, 35),
-        Accent = Color3.fromRGB(200, 200, 200),
-        Text = Color3.fromRGB(255, 255, 255),
-        SubText = Color3.fromRGB(150, 150, 150),
-        Stroke = Color3.fromRGB(80, 80, 80),
-        Hover = Color3.fromRGB(50, 50, 50),
-    }
+    Dark = { Main = Color3.fromRGB(20, 20, 24), Sidebar = Color3.fromRGB(26, 26, 32), Content = Color3.fromRGB(22, 22, 28), Accent = Color3.fromRGB(90, 180, 255), Text = Color3.fromRGB(245, 245, 245), SubText = Color3.fromRGB(160, 160, 160), Stroke = Color3.fromRGB(50, 50, 60), Hover = Color3.fromRGB(35, 35, 42) },
+    Midnight = { Main = Color3.fromRGB(10, 10, 14), Sidebar = Color3.fromRGB(16, 16, 22), Content = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(120, 100, 255), Text = Color3.fromRGB(230, 230, 255), SubText = Color3.fromRGB(120, 120, 160), Stroke = Color3.fromRGB(40, 40, 55), Hover = Color3.fromRGB(25, 25, 35) },
+    Blueprint = { Main = Color3.fromRGB(15, 25, 40), Sidebar = Color3.fromRGB(20, 35, 55), Content = Color3.fromRGB(25, 40, 60), Accent = Color3.fromRGB(50, 150, 255), Text = Color3.fromRGB(240, 250, 255), SubText = Color3.fromRGB(150, 180, 210), Stroke = Color3.fromRGB(60, 90, 120), Hover = Color3.fromRGB(30, 50, 80) },
+    Ocean = { Main = Color3.fromRGB(15, 20, 25), Sidebar = Color3.fromRGB(20, 30, 35), Content = Color3.fromRGB(25, 35, 40), Accent = Color3.fromRGB(0, 200, 200), Text = Color3.fromRGB(240, 255, 255), SubText = Color3.fromRGB(130, 160, 160), Stroke = Color3.fromRGB(40, 60, 70), Hover = Color3.fromRGB(30, 45, 50) },
+    Cherry = { Main = Color3.fromRGB(25, 15, 15), Sidebar = Color3.fromRGB(35, 20, 20), Content = Color3.fromRGB(30, 20, 20), Accent = Color3.fromRGB(255, 80, 80), Text = Color3.fromRGB(255, 240, 240), SubText = Color3.fromRGB(180, 130, 130), Stroke = Color3.fromRGB(70, 40, 40), Hover = Color3.fromRGB(50, 30, 30) },
+    Serpent = { Main = Color3.fromRGB(15, 20, 15), Sidebar = Color3.fromRGB(20, 28, 20), Content = Color3.fromRGB(22, 32, 22), Accent = Color3.fromRGB(80, 220, 120), Text = Color3.fromRGB(240, 255, 240), SubText = Color3.fromRGB(130, 160, 130), Stroke = Color3.fromRGB(40, 70, 40), Hover = Color3.fromRGB(30, 45, 30) },
+    Amethyst = { Main = Color3.fromRGB(20, 15, 25), Sidebar = Color3.fromRGB(30, 20, 40), Content = Color3.fromRGB(28, 22, 38), Accent = Color3.fromRGB(180, 100, 255), Text = Color3.fromRGB(250, 240, 255), SubText = Color3.fromRGB(160, 130, 180), Stroke = Color3.fromRGB(70, 50, 90), Hover = Color3.fromRGB(45, 30, 60) },
+    Concrete = { Main = Color3.fromRGB(30, 30, 30), Sidebar = Color3.fromRGB(38, 38, 38), Content = Color3.fromRGB(35, 35, 35), Accent = Color3.fromRGB(200, 200, 200), Text = Color3.fromRGB(255, 255, 255), SubText = Color3.fromRGB(150, 150, 150), Stroke = Color3.fromRGB(80, 80, 80), Hover = Color3.fromRGB(50, 50, 50) }
 }
 NexusFlow.CurrentTheme = NexusFlow.Themes.Dark
 local ThemeObjects = {}
@@ -115,7 +47,7 @@ local function UpdateAllThemes(ThemeName)
     NexusFlow.CurrentTheme = NewTheme
     for _, data in pairs(ThemeObjects) do
         if data.Object and data.Object.Parent then
-            TweenService:Create(data.Object, TweenInfo.new(0.4), {[data.Property] = NewTheme[data.Key]}):Play()
+            TweenService:Create(data.Object, TweenInfo.new(NexusFlow.AnimSpeed), {[data.Property] = NewTheme[data.Key]}):Play()
         end
     end
 end
@@ -182,11 +114,11 @@ local function SetupNotifications(ScreenGui)
         RegisterThemeObj(TText, "TextColor3", "Text")
 
         Frame.Size = UDim2.new(1, 0, 0, 0)
-        TweenService:Create(Frame, TweenInfo.new(0.3, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 60)}):Play()
+        TweenService:Create(Frame, TweenInfo.new(NexusFlow.AnimSpeed, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 60)}):Play()
 
         task.delay(Duration or 3, function()
             if Frame then
-                TweenService:Create(Frame, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1}):Play()
+                TweenService:Create(Frame, TweenInfo.new(NexusFlow.AnimSpeed), {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1}):Play()
                 TweenService:Create(TTitle, TweenInfo.new(0.2), {TextTransparency = 1}):Play()
                 TweenService:Create(TText, TweenInfo.new(0.2), {TextTransparency = 1}):Play()
                 TweenService:Create(Stroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
@@ -266,7 +198,7 @@ function NexusFlow:CreateWindow(Config)
     local SidebarStroke = Create("UIStroke", {Parent = Sidebar, Thickness = 1, Transparency = 0.6})
     RegisterThemeObj(SidebarStroke, "Color", "Stroke")
 
-    -- Profile (UPDATED: Title Removed, Centered)
+    -- Profile
     local ProfileFrame = Create("Frame", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(1, 0, 0, 50)
     })
@@ -279,29 +211,17 @@ function NexusFlow:CreateWindow(Config)
         local content = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
         ProfileImg.Image = content
     end)
-    
-    -- [PERBAIKAN DI SINI] Nama sekarang di tengah vertikal, tanpa sub-title
     local PName = Create("TextLabel", {
-        Parent = ProfileFrame, 
-        BackgroundTransparency = 1, 
-        Position = UDim2.new(0, 55, 0.5, 0), -- Posisi Tengah Y
-        AnchorPoint = Vector2.new(0, 0.5),  -- Anchor Point Tengah
-        Size = UDim2.new(0, 110, 0, 20), 
-        Text = LocalPlayer.DisplayName, 
-        Font = Enum.Font.GothamBold,
-        TextSize = 13, 
-        TextXAlignment = Enum.TextXAlignment.Left, 
-        TextColor3 = NexusFlow.CurrentTheme.Text
+        Parent = ProfileFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 55, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5),
+        Size = UDim2.new(0, 110, 0, 20), Text = LocalPlayer.DisplayName, Font = Enum.Font.GothamBold,
+        TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = NexusFlow.CurrentTheme.Text
     })
     RegisterThemeObj(PName, "TextColor3", "Text")
-    
-    -- Sub-title "Architect" sudah dihapus total di sini
 
     -- Title
     local TitleLabel = Create("TextLabel", {
         Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 15, 0, 20),
-        Size = UDim2.new(1, -15, 0, 20), 
-        Text = Config.Title or "NEXUSFLOW",
+        Size = UDim2.new(1, -15, 0, 20), Text = Config.Title or "NEXUSFLOW",
         Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = NexusFlow.CurrentTheme.Text,
         TextXAlignment = Enum.TextXAlignment.Left
     })
@@ -345,16 +265,16 @@ function NexusFlow:CreateWindow(Config)
     -- Actions
     CloseBtn.MouseButton1Click:Connect(function()
         NotifyFunc("System", "Unloading NexusFlow...", 1.5)
-        local RollTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 630, 0, 0)})
-        TweenService:Create(Shadow, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+        local RollTween = TweenService:Create(MainFrame, TweenInfo.new(NexusFlow.AnimSpeed, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 630, 0, 0)})
+        TweenService:Create(Shadow, TweenInfo.new(NexusFlow.FadeTime), {ImageTransparency = 1}):Play()
         RollTween:Play()
         task.wait(1.5)
         ScreenGui:Destroy()
     end)
     
     MinimizeBtn.MouseButton1Click:Connect(function()
-        local RollTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 630, 0, 0)})
-        TweenService:Create(Shadow, TweenInfo.new(0.3), {ImageTransparency = 1}):Play()
+        local RollTween = TweenService:Create(MainFrame, TweenInfo.new(NexusFlow.AnimSpeed, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 630, 0, 0)})
+        TweenService:Create(Shadow, TweenInfo.new(NexusFlow.FadeTime), {ImageTransparency = 1}):Play()
         RollTween:Play()
         RollTween.Completed:Wait()
         Shadow.Visible = false
@@ -368,9 +288,9 @@ function NexusFlow:CreateWindow(Config)
         wait(0.2)
         FloatingBtn.Visible = false
         Shadow.Visible = true
-        TweenService:Create(Shadow, TweenInfo.new(0.3), {ImageTransparency = 0.5}):Play()
+        TweenService:Create(Shadow, TweenInfo.new(NexusFlow.FadeTime), {ImageTransparency = 0.5}):Play()
         MainFrame.Size = UDim2.new(0, 630, 0, 0)
-        TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 630, 0, 430)}):Play()
+        TweenService:Create(MainFrame, TweenInfo.new(NexusFlow.AnimSpeed, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 630, 0, 430)}):Play()
     end)
 
     local Pages = Create("Frame", {
@@ -478,12 +398,34 @@ function NexusFlow:CreateWindow(Config)
                 local Fill = Create("Frame", {Parent = SliderBar, BackgroundColor3 = NexusFlow.CurrentTheme.Accent, Size = UDim2.new((Value - Min) / (Max - Min), 0, 1, 0)})
                 RegisterThemeObj(Fill, "BackgroundColor3", "Accent")
                 Create("UICorner", {Parent = Fill, CornerRadius = UDim.new(1,0)})
+                local Knob = Create("Frame", {Parent = SliderBar, AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = NexusFlow.CurrentTheme.Accent, Size = UDim2.new(0, 12, 0, 12), Position = UDim2.new((Value - Min) / (Max - Min), 0, 0.5, 0)})
+                RegisterThemeObj(Knob, "BackgroundColor3", "Accent")
+                Create("UICorner", {Parent = Knob, CornerRadius = UDim.new(1,0)})
                 local Btn = Create("TextButton", {Parent = SliderBar, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Text = ""})
                 local Dragging = false
                 Btn.MouseButton1Down:Connect(function() Dragging = true end)
                 UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then Dragging = false end end)
-                UserInputService.InputChanged:Connect(function(input) if Dragging and input.UserInputType == Enum.UserInputType.MouseMovement then local MousePos = UserInputService:GetMouseLocation().X local RelPos = MousePos - SliderBar.AbsolutePosition.X local Percent = math.clamp(RelPos / SliderBar.AbsoluteSize.X, 0, 1) Value = math.floor(Min + (Max - Min) * Percent) ValLbl.Text = tostring(Value) TweenService:Create(Fill, TweenInfo.new(0.05), {Size = UDim2.new(Percent, 0, 1, 0)}):Play() Callback(Value) end end)
+                UserInputService.InputChanged:Connect(function(input) if Dragging and input.UserInputType == Enum.UserInputType.MouseMovement then local MousePos = UserInputService:GetMouseLocation().X local RelPos = MousePos - SliderBar.AbsolutePosition.X local Percent = math.clamp(RelPos / SliderBar.AbsoluteSize.X, 0, 1) Value = math.floor(Min + (Max - Min) * Percent) ValLbl.Text = tostring(Value) TweenService:Create(Fill, TweenInfo.new(0.05), {Size = UDim2.new(Percent, 0, 1, 0)}):Play() TweenService:Create(Knob, TweenInfo.new(0.05), {Position = UDim2.new(Percent, 0, 0.5, 0)}):Play() Callback(Value) end end)
             end
+            
+            -- [NEW] KEYBIND FUNCTION
+            function TargetObj:CreateKeybind(Text, DefaultKey, Callback)
+                local Key = DefaultKey or Enum.KeyCode.RightControl
+                local Cont = Create("Frame", {Parent = Container, BackgroundColor3 = NexusFlow.CurrentTheme.Content, BackgroundTransparency = 0.2, Size = UDim2.new(1, 0, 0, 32)})
+                RegisterThemeObj(Cont, "BackgroundColor3", "Content")
+                Create("UICorner", {Parent = Cont, CornerRadius = UDim.new(0, 6)})
+                local Str = Create("UIStroke", {Parent = Cont, Color = NexusFlow.CurrentTheme.Stroke, Thickness = 1, Transparency = 0.5})
+                RegisterThemeObj(Str, "Color", "Stroke")
+                local Lbl = Create("TextLabel", {Parent = Cont, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -80, 1, 0), Text = Text, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = NexusFlow.CurrentTheme.Text})
+                RegisterThemeObj(Lbl, "TextColor3", "Text")
+                local BindBtn = Create("TextButton", {Parent = Cont, BackgroundColor3 = NexusFlow.CurrentTheme.Main, Position = UDim2.new(1, -70, 0.5, -10), Size = UDim2.new(0, 60, 0, 20), Text = Key.Name, Font = Enum.Font.GothamBold, TextSize = 11, TextColor3 = NexusFlow.CurrentTheme.SubText})
+                RegisterThemeObj(BindBtn, "BackgroundColor3", "Main") RegisterThemeObj(BindBtn, "TextColor3", "SubText")
+                Create("UICorner", {Parent = BindBtn, CornerRadius = UDim.new(0, 4)})
+                local Binding = false
+                BindBtn.MouseButton1Click:Connect(function() Binding = true BindBtn.Text = "..." BindBtn.TextColor3 = NexusFlow.CurrentTheme.Accent end)
+                UserInputService.InputBegan:Connect(function(input) if Binding and input.UserInputType == Enum.UserInputType.Keyboard then Key = input.KeyCode BindBtn.Text = Key.Name BindBtn.TextColor3 = NexusFlow.CurrentTheme.SubText Binding = false Callback(Key) end end)
+            end
+
             function TargetObj:CreateDropdown(Text, Options, Callback)
                 local Dropped = false
                 local DropCont = Create("Frame", {Parent = Container, BackgroundColor3 = NexusFlow.CurrentTheme.Content, BackgroundTransparency = 0.2, Size = UDim2.new(1, 0, 0, 32), ClipsDescendants = true})
@@ -521,6 +463,41 @@ function NexusFlow:CreateWindow(Config)
                 InputBox.Focused:Connect(function() TweenService:Create(InputStroke, TweenInfo.new(0.2), {Color = NexusFlow.CurrentTheme.Accent, Transparency = 0}):Play() end)
                 InputBox.FocusLost:Connect(function(enter) TweenService:Create(InputStroke, TweenInfo.new(0.2), {Color = NexusFlow.CurrentTheme.Stroke, Transparency = 0.5}):Play() if enter then Callback(InputBox.Text) end end)
             end
+            
+            function TargetObj:CreateColorPicker(Text, Default, Callback)
+                local Color = Default or Color3.fromRGB(255, 255, 255)
+                local PickerOpen = false
+                local Cont = Create("Frame", {Parent = Container, BackgroundColor3 = NexusFlow.CurrentTheme.Content, BackgroundTransparency = 0.2, Size = UDim2.new(1, 0, 0, 32), ClipsDescendants = true})
+                RegisterThemeObj(Cont, "BackgroundColor3", "Content")
+                Create("UICorner", {Parent = Cont, CornerRadius = UDim.new(0, 6)})
+                local Str = Create("UIStroke", {Parent = Cont, Color = NexusFlow.CurrentTheme.Stroke, Thickness = 1, Transparency = 0.5})
+                RegisterThemeObj(Str, "Color", "Stroke")
+                local Label = Create("TextLabel", {Parent = Cont, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -50, 0, 32), Text = Text, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = NexusFlow.CurrentTheme.Text})
+                RegisterThemeObj(Label, "TextColor3", "Text")
+                local Preview = Create("Frame", {Parent = Cont, Position = UDim2.new(1, -40, 0, 6), Size = UDim2.new(0, 30, 0, 20), BackgroundColor3 = Color})
+                Create("UICorner", {Parent = Preview, CornerRadius = UDim.new(0, 4)})
+                Create("UIStroke", {Parent = Preview, Color = Color3.fromRGB(255,255,255), Thickness = 1, Transparency = 0.5})
+                local ClickBtn = Create("TextButton", {Parent = Cont, Size = UDim2.new(1,0,0,32), BackgroundTransparency = 1, Text = ""})
+                local PickerFrame = Create("Frame", {Parent = Cont, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 32), Size = UDim2.new(1, 0, 0, 70)})
+                local R_In = Create("TextBox", {Parent = PickerFrame, Position = UDim2.new(0, 10, 0, 5), Size = UDim2.new(0, 40, 0, 20), BackgroundColor3 = NexusFlow.CurrentTheme.Main, Text = math.floor(Color.R*255), Font = Enum.Font.Gotham, TextSize = 11, TextColor3 = Color3.fromRGB(255,100,100), PlaceholderText = "R"})
+                Create("UICorner", {Parent = R_In, CornerRadius = UDim.new(0, 4)})
+                local G_In = Create("TextBox", {Parent = PickerFrame, Position = UDim2.new(0, 55, 0, 5), Size = UDim2.new(0, 40, 0, 20), BackgroundColor3 = NexusFlow.CurrentTheme.Main, Text = math.floor(Color.G*255), Font = Enum.Font.Gotham, TextSize = 11, TextColor3 = Color3.fromRGB(100,255,100), PlaceholderText = "G"})
+                Create("UICorner", {Parent = G_In, CornerRadius = UDim.new(0, 4)})
+                local B_In = Create("TextBox", {Parent = PickerFrame, Position = UDim2.new(0, 100, 0, 5), Size = UDim2.new(0, 40, 0, 20), BackgroundColor3 = NexusFlow.CurrentTheme.Main, Text = math.floor(Color.B*255), Font = Enum.Font.Gotham, TextSize = 11, TextColor3 = Color3.fromRGB(100,100,255), PlaceholderText = "B"})
+                Create("UICorner", {Parent = B_In, CornerRadius = UDim.new(0, 4)})
+                local HueBar = Create("Frame", {Parent = PickerFrame, Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 10), BackgroundColor3 = Color3.fromRGB(255,255,255)})
+                Create("UICorner", {Parent = HueBar, CornerRadius = UDim.new(1,0)})
+                Create("UIGradient", {Parent = HueBar, Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromHSV(0,1,1)),ColorSequenceKeypoint.new(0.2, Color3.fromHSV(0.2,1,1)),ColorSequenceKeypoint.new(0.4, Color3.fromHSV(0.4,1,1)),ColorSequenceKeypoint.new(0.6, Color3.fromHSV(0.6,1,1)),ColorSequenceKeypoint.new(0.8, Color3.fromHSV(0.8,1,1)),ColorSequenceKeypoint.new(1, Color3.fromHSV(1,1,1))}})
+                local HueKnob = Create("Frame", {Parent = HueBar, Size = UDim2.new(0, 4, 1, 4), Position = UDim2.new(0,0,0.5,0), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(255,255,255), BorderSizePixel = 0})
+                local function UpdateColor() Color = Color3.fromRGB(tonumber(R_In.Text) or 0, tonumber(G_In.Text) or 0, tonumber(B_In.Text) or 0) Preview.BackgroundColor3 = Color Callback(Color) end
+                R_In.FocusLost:Connect(UpdateColor) G_In.FocusLost:Connect(UpdateColor) B_In.FocusLost:Connect(UpdateColor)
+                local HueDrag = Create("TextButton", {Parent = HueBar, BackgroundTransparency = 1, Size = UDim2.new(1,0,1,0), Text = ""})
+                local DraggingHue = false
+                HueDrag.MouseButton1Down:Connect(function() DraggingHue = true end)
+                UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then DraggingHue = false end end)
+                UserInputService.InputChanged:Connect(function(i) if DraggingHue and i.UserInputType == Enum.UserInputType.MouseMovement then local RelX = math.clamp((i.Position.X - HueBar.AbsolutePosition.X) / HueBar.AbsoluteSize.X, 0, 1) HueKnob.Position = UDim2.new(RelX, 0, 0.5, 0) local NewColor = Color3.fromHSV(RelX, 1, 1) R_In.Text = math.floor(NewColor.R * 255) G_In.Text = math.floor(NewColor.G * 255) B_In.Text = math.floor(NewColor.B * 255) UpdateColor() end end)
+                ClickBtn.MouseButton1Click:Connect(function() PickerOpen = not PickerOpen TweenService:Create(Cont, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, PickerOpen and 90 or 32)}):Play() end)
+            end
         end
 
         CreateFunctions(LeftCol, Tab.Left)
@@ -531,15 +508,14 @@ function NexusFlow:CreateWindow(Config)
     
     function Win:LoadModule(Url)
         NotifyFunc("System", "Fetching Module...", 2)
-        local Success, Result = pcall(function()
-            return loadstring(game:HttpGet(Url))(Win)
-        end)
-        
-        if Success then
-            NotifyFunc("Success", "Module Loaded!", 2)
-        else
-            NotifyFunc("Error", "Failed to Load", 2)
-            warn(Result)
+        local Success, Result = pcall(function() return loadstring(game:HttpGet(Url))(Win) end)
+        if Success then NotifyFunc("Success", "Module Loaded!", 2) else NotifyFunc("Error", "Failed to Load", 2) warn(Result) end
+    end
+    
+    -- [NEW] PRIVACY MODE TOGGLE
+    function Win:SetProfileVisible(State)
+        if ProfileFrame then
+            TweenService:Create(ProfileFrame, TweenInfo.new(0.5), {GroupTransparency = State and 0 or 1}):Play()
         end
     end
     
